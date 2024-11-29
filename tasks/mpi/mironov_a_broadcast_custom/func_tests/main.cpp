@@ -498,8 +498,12 @@ TEST(mironov_a_broadcast_custom_mpi, Test_broadcast_with_even_and_odd_processes)
 
   // create another communicator
   boost::mpi::communicator local_comm = world.split(rank % 2);
-  if (rank == 2 || rank == 3) {
+  if (rank == 2) {
     vector_for_broadcast = golds_even;
+  }
+  if (rank == 3)
+  {
+    vector_for_broadcast = golds_odd;
   }
 
   // share data
