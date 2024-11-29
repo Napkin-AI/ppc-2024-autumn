@@ -431,8 +431,7 @@ TEST(mironov_a_broadcast_custom_mpi, Test_wrong_input_2) {
 TEST(mironov_a_broadcast_custom_mpi, Test_broadcast_with_diff_root_1) {
   boost::mpi::communicator world;
   if (world.size() < 3) {
-    ASSERT_TRUE(true);
-    return;
+    GTEST_SKIP();
   }
   // Create data
   std::vector<int> vector_for_broadcast(10);
@@ -449,14 +448,16 @@ TEST(mironov_a_broadcast_custom_mpi, Test_broadcast_with_diff_root_1) {
   mironov_a_broadcast_custom_mpi::ComponentSumPowerCustomImpl::broadcastImpl(world, vector_for_broadcast.data(), 10, 2);
 
   // check
+  if (vector_for_broadcast != golds) {
+    std::cout << "! " << world.rank() << std::endl;
+  }
   ASSERT_EQ(vector_for_broadcast, golds);
 }
 
 TEST(mironov_a_broadcast_custom_mpi, Test_broadcast_with_diff_root_2) {
   boost::mpi::communicator world;
   if (world.size() < 3) {
-    ASSERT_TRUE(true);
-    return;
+    GTEST_SKIP();
   }
   // Create data
   std::vector<int> vector_for_broadcast(10);
@@ -473,17 +474,18 @@ TEST(mironov_a_broadcast_custom_mpi, Test_broadcast_with_diff_root_2) {
   mironov_a_broadcast_custom_mpi::ComponentSumPowerCustomImpl::broadcastImpl(world, vector_for_broadcast.data(), 10, 1);
 
   // check
+  if (vector_for_broadcast != golds) {
+    std::cout << "! " << world.rank() << std::endl;
+  }
   ASSERT_EQ(vector_for_broadcast, golds);
 }
 
 TEST(mironov_a_broadcast_custom_mpi, Test_broadcast_with_even_and_odd_processes) {
-  boost::mpi::environment env;
   boost::mpi::communicator world;
 
   // here using 2 roots: 3 and 4 processes
   if (world.size() < 4) {
-    ASSERT_TRUE(true);
-    return;
+    GTEST_SKIP();
   }
 
   // initialize data and golds
@@ -506,8 +508,14 @@ TEST(mironov_a_broadcast_custom_mpi, Test_broadcast_with_even_and_odd_processes)
 
   // check
   if (rank % 2 == 1) {
+    if (vector_for_broadcast != golds_odd) {
+      std::cout << "! " << world.rank() << std::endl;
+    }
     ASSERT_EQ(vector_for_broadcast, golds_odd);
   } else if (rank % 2 == 0) {
+    if (vector_for_broadcast != golds_even) {
+      std::cout << "! " << world.rank() << std::endl;
+    }
     ASSERT_EQ(vector_for_broadcast, golds_even);
   }
 }
